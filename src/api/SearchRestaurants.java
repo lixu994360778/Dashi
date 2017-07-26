@@ -17,6 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 /**
  * Servlet implementation class SearchRestaurants
  */
@@ -37,8 +41,11 @@ public class SearchRestaurants extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	private static final Logger LOGGER = Logger.getLogger(SearchRestaurants.class.getName());
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		JSONArray array = new JSONArray();
+		DBConnection connection = new MySQLDBConnection();
+                       //Comment those session related codes
 		if (request.getParameterMap().containsKey("lat")
 				&& request.getParameterMap().containsKey("lon")) {
 			// term is null or empty by default
@@ -47,6 +54,7 @@ public class SearchRestaurants extends HttpServlet {
 			String userId = "1111";
 			double lat = Double.parseDouble(request.getParameter("lat"));
 			double lon = Double.parseDouble(request.getParameter("lon"));
+			LOGGER.log(Level.INFO, "lat:" + lat + ",lon:" + lon);
 			array = connection.searchRestaurants(userId, lat, lon, term);
 		}
 		RpcParser.writeOutput(response, array);
